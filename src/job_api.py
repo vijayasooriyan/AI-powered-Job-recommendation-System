@@ -1,3 +1,10 @@
+from apify_client import ApifyClient
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+apify_client = ApifyClient(os.getenv("APIFY_API_TOKEN"))    
+
 #fetch linkedin and naukri jobs based on search query and location and return the results as a list of dictionaries with keys: title, company, location, description, url
 def fetch_linkedin_jobs(search_query,location="Srilanka", row=60):
     run_input = {

@@ -1,17 +1,14 @@
 import fitz  #PymuPDF
 import os
 import dotenv
-from openai import OpenAI
-from apify_client import ApifyClient
+from groq import Groq
+from dotenv import load_dotenv
 
 load_dotenv()
 
-OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-os.environ["OPENAI_API_KEY"] = OPENAI_API_KEY
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
-client = OpenAI(api_key=OPENAI_API_KEY)
-apify_client = ApifyClient(os.getenv("APIFY_API_TOKEN"))
-
+client = Groq(api_key=GROQ_API_KEY)  
 def extract_text_from_pdf(uploaded_file):
     """
     Extracts text from a PDF file.
@@ -29,19 +26,19 @@ def extract_text_from_pdf(uploaded_file):
         text = page.get_text()
     return text
 
-def ask_openai(prompt,max_tokens=500):
+def ask_groq(prompt, max_tokens=500):
     """
-    Sends a prompt to the OpenAI API and returns the response.
+    Sends a prompt to the Groq API and returns the response.
 
     Args:
-        prompt (str): The prompt to send to the OpenAI API.
+        prompt (str): The prompt to send to the Groq API.
 
     Returns:
-        str: The response from the OpenAI API.
+        str: The response from the Groq API.
     """
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="llama-3.3-70b-versatile",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
