@@ -248,7 +248,7 @@ git push origin main
 # Live in 2-3 minutes!
 ```
 
-**Live URL:** https://job-recommender-3k1m.onrender.com ✅
+**Live URL:** [https://job-recommender-3k1m.onrender.com](https://ai-powered-job-recommendation-system.onrender.com/) ✅
 
 ---
 
@@ -315,18 +315,6 @@ venv/
 
 ---
 
-## 📊 Performance Metrics
-
-| Metric | Value | Notes |
-|--------|-------|-------|
-| **Resume Analysis Time** | 2-3 seconds | Uses fast Groq API |
-| **Job Search Time** | 3-5 seconds | JSearch API aggregation |
-| **Total App Response** | < 10 seconds | End-to-end |
-| **Free API Requests** | 100/month | RapidAPI free tier |
-| **Concurrent Users** | Unlimited | Render auto-scales |
-| **Uptime SLA** | 99.9% | Render guarantee |
-| **Docker Image Size** | ~300MB | Optimized Python slim |
-| **Memory Usage** | < 256MB | Efficient processing |
 
 ---
 
@@ -354,115 +342,11 @@ streamlit run app.py
 
 ---
 
-## 🆘 Troubleshooting
-
-### Issue: "ModuleNotFoundError: No module named 'streamlit'"
-```bash
-# Solution: Install dependencies
-pip install -r requirements.txt
-
-# Then restart app
-streamlit run app.py
-```
-
-### Issue: "RAPIDAPI_KEY not configured"
-```bash
-# Solution: Verify .env file
-cat .env
-
-# If empty, get key from:
-# https://rapidapi.com/laimoon/api/jsearch
-
-# Update .env with actual key
-RAPIDAPI_KEY=your_actual_key_here
-```
-
-### Issue: "No jobs found"
-```bash
-# Possible solutions:
-1. Verify API key is valid (not placeholder)
-2. Try simpler search keywords
-3. Check RapidAPI usage: 
-   https://rapidapi.com/user/account/billing
-
-4. Check Render logs:
-   https://dashboard.render.com → Logs tab
-```
-
-### Issue: "App won't start locally"
-```bash
-# Solution 1: Clear Streamlit cache
-streamlit cache clear
-
-# Solution 2: Upgrade Streamlit
-pip install --upgrade streamlit
-
-# Solution 3: Check Python version
-python --version  # Should be 3.13+ as per pyproject.toml
-
-# Solution 4: Reinstall dependencies
-pip install -r requirements.txt --force-reinstall
-```
-
-### Issue: "Docker build fails"
-```bash
-# Solution: Check Docker installation
-docker --version
-
-# Build with verbose output
-docker build -t job-recommender . --progress=plain
-
-# Check available disk space
-df -h
-```
-
-
-
-## 🤝 Contributing
-
-We welcome contributions! Here's how:
-
-```bash
-# 1. Fork the repository
-# Click "Fork" on GitHub
-
-# 2. Clone your fork
-git clone https://github.com/YOUR_USERNAME/Job_Recommeder.git
-cd Job_Recommeder
-
-# 3. Create feature branch
-git checkout -b feature/amazing-feature
-
-# 4. Make your changes
-# Edit files and test locally
-
-# 5. Commit changes
-git add .
-git commit -m "Add amazing feature: description"
-
-# 6. Push to your fork
-git push origin feature/amazing-feature
-
-# 7. Create Pull Request
-# Go to GitHub and create PR from your fork
-```
-
-### Contribution Guidelines
-- Follow PEP 8 style guide
-- Add docstrings to all functions
-- Test changes locally first
-- Update documentation as needed
-- Write clear, descriptive commit messages
-- Ensure code passes all tests
-
----
-
-
 ## 📜 License
 
 MIT License - Open for personal and commercial use.
 
-
+---
 
 ## 📞 Contact & Support
 
