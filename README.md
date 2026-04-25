@@ -27,7 +27,7 @@ A Streamlit application that recommends job positions based on your resume and e
 - **Frontend:** Streamlit
 - **Backend:** Python 3.13
 - **AI:** Groq API
-- **Job Scraping:** Apify
+- **Job Scraping:** JSearch API (RapidAPI)
 - **Container:** Docker
 - **Deployment:** Render
 - **CI/CD:** GitHub Actions
@@ -65,7 +65,8 @@ cp .env.example .env
 
 # Add your API keys to .env
 # GROQ_API_KEY=your_key_here
-# APIFY_TOKEN=your_token_here
+# RAPIDAPI_KEY=your_key_here
+# RAPIDAPI_HOST=jsearch.p.rapidapi.com
 
 # Run the app
 streamlit run app.py
@@ -91,7 +92,8 @@ docker build -t job-recommender .
 
 # Run container
 docker run -e GROQ_API_KEY="your_key" \
-           -e APIFY_TOKEN="your_token" \
+           -e RAPIDAPI_KEY="your_key" \
+           -e RAPIDAPI_HOST="jsearch.p.rapidapi.com" \
            -p 8501:8501 \
            job-recommender
 ```
@@ -154,8 +156,8 @@ Create a `.env` file (copy from `.env.example`):
 
 ```env
 GROQ_API_KEY=your_groq_api_key
-APIFY_TOKEN=your_apify_token
-OPENAI_API_KEY=optional_key
+RAPIDAPI_KEY=your_rapidapi_key
+RAPIDAPI_HOST=jsearch.p.rapidapi.com
 DEBUG=false
 LOG_LEVEL=INFO
 ```
@@ -172,11 +174,12 @@ LOG_LEVEL=INFO
 3. Create API key
 4. Add to `.env`
 
-### 2. Apify Token
-1. Go to https://apify.com
-2. Sign up / Login
-3. Create token in settings
-4. Add to `.env`
+### 2. RapidAPI Key (JSearch)
+1. Go to https://rapidapi.com/laimoon/api/jsearch
+2. Click "Subscribe to Test" (Free tier)
+3. Copy your API Key from the dashboard
+4. Add to `.env`: `RAPIDAPI_KEY=your_key_here`
+5. Set `RAPIDAPI_HOST=jsearch.p.rapidapi.com`
 
 ---
 
