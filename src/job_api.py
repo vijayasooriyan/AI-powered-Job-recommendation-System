@@ -37,109 +37,151 @@ def strip_html(html_text):
 def fetch_linkedin_jobs(search_query, location="", row=10):
     """
     Fetch jobs using The Muse API
+    Handles multiple keywords by searching for each and combining results
     Free tier: Unlimited requests, no authentication required
-    Better quality jobs than other free alternatives
     """
     try:
-        params = {
-            "page": 0,
-            "page_size": min(row, 50)  # The Muse supports up to 50 per page
-        }
+        # Split keywords by comma and clean them up
+        keywords = [kw.strip() for kw in search_query.split(",")]
+        all_jobs = []
+        seen_urls = set()  # To avoid duplicates
         
-        # Add search query if provided
-        if search_query:
-            params["search"] = search_query
-        
-        # Add location filter if provided
-        if location:
-            params["location"] = location
-        
-        response = requests.get(MUSE_BASE_URL, params=params, timeout=10)
-        
-        if response.status_code != 200:
-            print(f"The Muse API Error: {response.status_code}")
-            return []
-        
-        raw_jobs = response.json().get('results', [])
-        
-        # Normalize the data to consistent keys
-        jobs = []
-        for job in raw_jobs[:row]:  # Limit to 'row' number of jobs
-            try:
-                # Clean up description if it contains HTML
-                description = job.get("contents", "N/A")
-                if description != "N/A":
-                    description = strip_html(description)[:500] + "..."
+        # Fetch jobs for each keyword
+        for keyword in keywords:
+            if not keyword:
+                continue
                 
-                normalized_job = {
-                    "title": job.get("name", "N/A"),
-                    "company": job.get("company", {}).get("name", "N/A"),
-                    "location": job.get("locations", [{}])[0].get("name", "Remote") if job.get("locations") else "Remote",
-                    "description": description,
-                    "url": job.get("refs", {}).get("landing_page", "#")
-                }
-                jobs.append(normalized_job)
+            params = {
+                "page": 0,
+                "page_size": min(row, 50)
+            }
+            
+            params["search"] = keyword
+            
+            if location:
+                params["location"] = location
+            
+            try:
+                response = requests.get(MUSE_BASE_URL, params=params, timeout=10)
+                
+                if response.status_code != 200:
+                    continue
+                
+                raw_jobs = response.json().get('results', [])
+                
+                # Normalize and add jobs
+                for job in raw_jobs:
+                    try:
+                        job_url = job.get("refs", {}).get("landing_page", "#")
+                        
+                        # Skip duplicates
+                        if job_url in seen_urls:
+                            continue
+                        
+                        seen_urls.add(job_url)
+                        
+                        # Clean up description if it contains HTML
+                        description = job.get("contents", "N/A")
+                        if description != "N/A":
+                            description = strip_html(description)[:500] + "..."
+                        
+                        normalized_job = {
+                            "title": job.get("name", "N/A"),
+                            "company": job.get("company", {}).get("name", "N/A"),
+                            "location": job.get("locations", [{}])[0].get("name", "Remote") if job.get("locations") else "Remote",
+                            "description": description,
+                            "url": job_url,
+                            "keyword_matched": keyword  # Track which keyword matched
+                        }
+                        all_jobs.append(normalized_job)
+                        
+                        if len(all_jobs) >= row:
+                            return all_jobs[:row]
+                    except Exception as e:
+                        print(f"Error processing job: {e}")
+                        continue
             except Exception as e:
-                print(f"Error processing job: {e}")
+                print(f"Error fetching jobs for keyword '{keyword}': {e}")
                 continue
         
-        return jobs
+        return all_jobs[:row]
     
     except Exception as e:
-        print(f"Error fetching jobs from The Muse: {e}")
+        print(f"Error fetching LinkedIn jobs: {e}")
         return []
 
 
 def fetch_naukri_jobs(search_query, location="", row=10):
     """
     Fetch jobs using The Muse API (same as fetch_linkedin_jobs)
-    The Muse aggregates jobs from multiple sources
+    Handles multiple keywords by searching for each and combining results
     Free tier: Unlimited requests, no authentication required
     """
     try:
-        params = {
-            "page": 0,
-            "page_size": min(row, 50)  # The Muse supports up to 50 per page
-        }
+        # Split keywords by comma and clean them up
+        keywords = [kw.strip() for kw in search_query.split(",")]
+        all_jobs = []
+        seen_urls = set()  # To avoid duplicates
         
-        # Add search query if provided
-        if search_query:
-            params["search"] = search_query
-        
-        # Add location filter if provided
-        if location:
-            params["location"] = location
-        
-        response = requests.get(MUSE_BASE_URL, params=params, timeout=10)
-        
-        if response.status_code != 200:
-            print(f"The Muse API Error: {response.status_code}")
-            return []
-        
-        raw_jobs = response.json().get('results', [])
-        
-        # Normalize the data to consistent keys
-        jobs = []
-        for job in raw_jobs[:row]:  # Limit to 'row' number of jobs
-            try:
-                # Clean up description if it contains HTML
-                description = job.get("contents", "N/A")
-                if description != "N/A":
-                    description = strip_html(description)[:500] + "..."
+        # Fetch jobs for each keyword
+        for keyword in keywords:
+            if not keyword:
+                continue
                 
-                normalized_job = {
-                    "title": job.get("name", "N/A"),
-                    "company": job.get("company", {}).get("name", "N/A"),
-                    "location": job.get("locations", [{}])[0].get("name", "Remote") if job.get("locations") else "Remote",
-                    "description": description,
-                    "url": job.get("refs", {}).get("landing_page", "#")
-                }
-                jobs.append(normalized_job)
+            params = {
+                "page": 0,
+                "page_size": min(row, 50)
+            }
+            
+            params["search"] = keyword
+            
+            if location:
+                params["location"] = location
+            
+            try:
+                response = requests.get(MUSE_BASE_URL, params=params, timeout=10)
+                
+                if response.status_code != 200:
+                    continue
+                
+                raw_jobs = response.json().get('results', [])
+                
+                # Normalize and add jobs
+                for job in raw_jobs:
+                    try:
+                        job_url = job.get("refs", {}).get("landing_page", "#")
+                        
+                        # Skip duplicates
+                        if job_url in seen_urls:
+                            continue
+                        
+                        seen_urls.add(job_url)
+                        
+                        # Clean up description if it contains HTML
+                        description = job.get("contents", "N/A")
+                        if description != "N/A":
+                            description = strip_html(description)[:500] + "..."
+                        
+                        normalized_job = {
+                            "title": job.get("name", "N/A"),
+                            "company": job.get("company", {}).get("name", "N/A"),
+                            "location": job.get("locations", [{}])[0].get("name", "Remote") if job.get("locations") else "Remote",
+                            "description": description,
+                            "url": job_url,
+                            "keyword_matched": keyword  # Track which keyword matched
+                        }
+                        all_jobs.append(normalized_job)
+                        
+                        if len(all_jobs) >= row:
+                            return all_jobs[:row]
+                    except Exception as e:
+                        print(f"Error processing job: {e}")
+                        continue
             except Exception as e:
-                print(f"Error processing job: {e}")
+                print(f"Error fetching jobs for keyword '{keyword}': {e}")
                 continue
         
-        return jobs
+        return all_jobs[:row]
     
     except Exception as e:
         print(f"Error fetching Naukri jobs from The Muse: {e}")
