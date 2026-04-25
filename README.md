@@ -416,16 +416,7 @@ docker build -t job-recommender . --progress=plain
 df -h
 ```
 
----
 
-## 📚 Complete Documentation
-
-- **[QUICKSTART.md](QUICKSTART.md)** - 5-minute setup guide
-- **[CI_CD_GUIDE.md](CI_CD_GUIDE.md)** - Detailed deployment instructions
-- **[ARCHITECTURE.md](ARCHITECTURE.md)** - System design & flow diagrams
-- **[TROUBLESHOOTING.md](TROUBLESHOOTING.md)** - Common issues & solutions
-
----
 
 ## 🤝 Contributing
 
@@ -466,118 +457,12 @@ git push origin feature/amazing-feature
 
 ---
 
-## 📈 Roadmap & Future Enhancements
-
-### v2.0 (Upcoming)
-- [ ] User authentication & profiles
-- [ ] Save favorite jobs
-- [ ] Email notifications for new matches
-- [ ] Advanced filtering (salary, experience level, location)
-- [ ] Resume upload history & management
-- [ ] Multiple resume comparison
-
-### v3.0 (Planned)
-- [ ] Database integration (PostgreSQL)
-- [ ] User dashboard with analytics
-- [ ] Mobile app (React Native)
-- [ ] Integration with 100+ job boards
-- [ ] AI-generated cover letters
-- [ ] Interview preparation tips
-
-### v4.0 (Future Vision)
-- [ ] Machine learning model for better matching
-- [ ] Salary prediction based on skills
-- [ ] Company salary insights & reviews
-- [ ] Professional networking recommendations
-- [ ] Career path suggestions
-- [ ] Blockchain resume verification
-
----
-
-## 📊 Project Statistics
-
-| Metric | Value |
-|--------|-------|
-| **Total Lines of Code** | ~600 |
-| **Python Files** | 3 core modules |
-| **APIs Integrated** | 2 (Groq, JSearch) |
-| **Features Implemented** | 8 major features |
-| **External Dependencies** | 15 packages |
-| **Test Coverage Target** | 80%+ |
-| **Documentation Pages** | 5 comprehensive guides |
-| **Development Time** | End-to-end full stack |
-
----
-
-## 💼 Interview Highlights
-
-This project demonstrates expertise in:
-
-### Backend Development
-- ✅ Python 3.13+ with type hints & async
-- ✅ REST API integration & error handling
-- ✅ Data processing & cleaning pipelines
-- ✅ File handling (PDF extraction & parsing)
-- ✅ Environment configuration management
-
-### Frontend Development
-- ✅ Streamlit rapid prototyping framework
-- ✅ Interactive UI components & state management
-- ✅ Responsive design & user experience
-- ✅ Real-time data visualization
-
-### AI & Machine Learning
-- ✅ LLM API integration (Groq)
-- ✅ NLP for text extraction & analysis
-- ✅ Prompt engineering & optimization
-- ✅ Error handling for AI responses
-- ✅ Semantic matching algorithms
-
-### DevOps & Cloud Infrastructure
-- ✅ Docker containerization & multi-stage builds
-- ✅ GitHub Actions CI/CD automation
-- ✅ Cloud deployment (Render)
-- ✅ Environment variable management
-- ✅ Monitoring, logging & debugging
-
-### Software Engineering Practices
-- ✅ Version control & Git workflows
-- ✅ Code organization & modularity
-- ✅ Error handling & resilience patterns
-- ✅ Documentation best practices
-- ✅ Security & secrets management
-- ✅ Testing strategies & quality assurance
-
----
-
-## 🎓 Learning Outcomes
-
-By studying this project, you'll understand:
-
-1. **Full-Stack Development** - Frontend to backend to deployment
-2. **API Design & Integration** - Working with external APIs
-3. **Cloud Architecture** - Docker & Render deployment
-4. **CI/CD Automation** - GitHub Actions workflows
-5. **AI Integration** - Using LLMs in production
-6. **Error Handling** - Building resilient applications
-7. **Security** - Managing secrets & sensitive data
-8. **Best Practices** - Clean code, testing, documentation
-
----
 
 ## 📜 License
 
 MIT License - Open for personal and commercial use.
 
-See [LICENSE](LICENSE) file for full details.
 
-You are free to:
-- ✅ Use this project commercially
-- ✅ Modify the source code
-- ✅ Distribute modified versions
-- ✅ Use privately
-
----
 
 ## 📞 Contact & Support
 
@@ -624,7 +509,7 @@ You are free to:
 
 ---
 
-Made with ❤️ by **Vijayasooriyan K**
+Made with ❤️ by **Vijayasooriyan Kamarajah**
 
 Powered by **Groq AI** + **JSearch API** + **Streamlit** + **Docker** + **GitHub Actions**
 
