@@ -40,6 +40,11 @@ def fetch_linkedin_jobs(search_query, location="", row=10):
     Fetch LinkedIn jobs using JSearch API from RapidAPI
     Free tier: 100 requests/month
     """
+    # Safety check: If RAPIDAPI_KEY is not set, return empty list
+    if not RAPIDAPI_KEY or RAPIDAPI_KEY == "your_jsearch_rapidapi_key_here":
+        print("⚠️ Warning: RAPIDAPI_KEY not configured. Skipping job search.")
+        return []
+    
     try:
         url = "https://jsearch.p.rapidapi.com/search"
         
@@ -95,6 +100,11 @@ def fetch_naukri_jobs(search_query, location="", row=10):
     Fetch jobs using JSearch API (same as fetch_linkedin_jobs)
     JSearch aggregates jobs from multiple sources including Naukri-like platforms
     """
+    # Safety check: If RAPIDAPI_KEY is not set, return empty list
+    if not RAPIDAPI_KEY or RAPIDAPI_KEY == "your_jsearch_rapidapi_key_here":
+        print("⚠️ Warning: RAPIDAPI_KEY not configured. Skipping job search.")
+        return []
+    
     try:
         url = "https://jsearch.p.rapidapi.com/search"
         

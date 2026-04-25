@@ -623,8 +623,13 @@ if uploaded_file:
         st.success(f"✅ Keywords extracted: **{search_keywords}**")
 
         with st.spinner("🌐 Fetching job recommendations from LinkedIn and Naukri..."):
-            linkedin_jobs = fetch_linkedin_jobs(search_keywords, row=60)
-            naukri_jobs = fetch_naukri_jobs(search_keywords, row=60)
+            try:
+                linkedin_jobs = fetch_linkedin_jobs(search_keywords, row=60)
+                naukri_jobs = fetch_naukri_jobs(search_keywords, row=60)
+            except Exception as e:
+                st.warning(f"⚠️ Could not fetch jobs: {str(e)}")
+                linkedin_jobs = []
+                naukri_jobs = []
             time.sleep(1)
         
         # Display Stats
