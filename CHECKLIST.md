@@ -45,7 +45,7 @@ git push -u origin main
 - [ ] Name: `github-actions`
 - [ ] Permissions: Read & Write
 - [ ] Copy token (paste below)
-- [ ] Token: `dckr_pat_92b1KTXPT_tL6NFiKv-9buF0pjY`
+- [ ] Token: `your_docker_token_here`
 
 ---
 
