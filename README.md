@@ -248,7 +248,7 @@ git push origin main
 # Live in 2-3 minutes!
 ```
 
-**Live URL:** https://job-recommender-3k1m.onrender.com ✅
+**Live URL:** [https://job-recommender-3k1m.onrender.com](https://ai-powered-job-recommendation-system.onrender.com/) ✅
 
 ---
 
