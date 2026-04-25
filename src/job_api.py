@@ -4,9 +4,8 @@ from dotenv import load_dotenv
 from html.parser import HTMLParser
 load_dotenv()
 
-# RapidAPI credentials for JSearch
-RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
-RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST", "jsearch.p.rapidapi.com")
+# The Muse API - No authentication needed, unlimited free requests
+MUSE_BASE_URL = "https://www.themuse.com/api/public/jobs"
 
 # Helper class to strip HTML tags
 class HTMLStripper(HTMLParser):
@@ -34,54 +33,50 @@ def strip_html(html_text):
     except:
         return html_text    
 
-#fetch jobs using JSearch API (free alternative to Apify)
+#fetch jobs using The Muse API (free alternative, no auth needed)
 def fetch_linkedin_jobs(search_query, location="", row=10):
     """
-    Fetch LinkedIn jobs using JSearch API from RapidAPI
-    Free tier: 100 requests/month
+    Fetch jobs using The Muse API
+    Free tier: Unlimited requests, no authentication required
+    Better quality jobs than other free alternatives
     """
-    # Safety check: If RAPIDAPI_KEY is not set, return empty list
-    if not RAPIDAPI_KEY or RAPIDAPI_KEY == "your_jsearch_rapidapi_key_here":
-        print("⚠️ Warning: RAPIDAPI_KEY not configured. Skipping job search.")
-        return []
-    
     try:
-        url = "https://jsearch.p.rapidapi.com/search"
+        params = {
+            "page": 0,
+            "page_size": min(row, 50)  # The Muse supports up to 50 per page
+        }
         
-        # Search query with location
-        search_string = f"{search_query} jobs"
+        # Add search query if provided
+        if search_query:
+            params["search"] = search_query
+        
+        # Add location filter if provided
         if location:
-            search_string += f" in {location}"
+            params["location"] = location
         
-        querystring = {
-            "query": search_string,
-            "page": "1",
-            "num_pages": "1"
-        }
-        
-        headers = {
-            "x-rapidapi-key": RAPIDAPI_KEY,
-            "x-rapidapi-host": RAPIDAPI_HOST
-        }
-        
-        response = requests.get(url, headers=headers, params=querystring, timeout=10)
+        response = requests.get(MUSE_BASE_URL, params=params, timeout=10)
         
         if response.status_code != 200:
-            print(f"JSearch API Error: {response.status_code}")
+            print(f"The Muse API Error: {response.status_code}")
             return []
         
-        raw_jobs = response.json().get('data', [])
+        raw_jobs = response.json().get('results', [])
         
         # Normalize the data to consistent keys
         jobs = []
         for job in raw_jobs[:row]:  # Limit to 'row' number of jobs
             try:
+                # Clean up description if it contains HTML
+                description = job.get("contents", "N/A")
+                if description != "N/A":
+                    description = strip_html(description)[:500] + "..."
+                
                 normalized_job = {
-                    "title": job.get("job_title", "N/A"),
-                    "company": job.get("employer_name", "N/A"),
-                    "location": job.get("job_city", "") + ", " + job.get("job_country", ""),
-                    "description": job.get("job_description", "N/A")[:500] + "...",  # Truncate
-                    "url": job.get("job_apply_link", "#")
+                    "title": job.get("name", "N/A"),
+                    "company": job.get("company", {}).get("name", "N/A"),
+                    "location": job.get("locations", [{}])[0].get("name", "Remote") if job.get("locations") else "Remote",
+                    "description": description,
+                    "url": job.get("refs", {}).get("landing_page", "#")
                 }
                 jobs.append(normalized_job)
             except Exception as e:
@@ -91,56 +86,53 @@ def fetch_linkedin_jobs(search_query, location="", row=10):
         return jobs
     
     except Exception as e:
-        print(f"Error fetching LinkedIn jobs: {e}")
+        print(f"Error fetching jobs from The Muse: {e}")
         return []
 
 
 def fetch_naukri_jobs(search_query, location="", row=10):
     """
-    Fetch jobs using JSearch API (same as fetch_linkedin_jobs)
-    JSearch aggregates jobs from multiple sources including Naukri-like platforms
+    Fetch jobs using The Muse API (same as fetch_linkedin_jobs)
+    The Muse aggregates jobs from multiple sources
+    Free tier: Unlimited requests, no authentication required
     """
-    # Safety check: If RAPIDAPI_KEY is not set, return empty list
-    if not RAPIDAPI_KEY or RAPIDAPI_KEY == "your_jsearch_rapidapi_key_here":
-        print("⚠️ Warning: RAPIDAPI_KEY not configured. Skipping job search.")
-        return []
-    
     try:
-        url = "https://jsearch.p.rapidapi.com/search"
+        params = {
+            "page": 0,
+            "page_size": min(row, 50)  # The Muse supports up to 50 per page
+        }
         
-        search_string = f"{search_query} jobs"
+        # Add search query if provided
+        if search_query:
+            params["search"] = search_query
+        
+        # Add location filter if provided
         if location:
-            search_string += f" in {location}"
+            params["location"] = location
         
-        querystring = {
-            "query": search_string,
-            "page": "1",
-            "num_pages": "1"
-        }
-        
-        headers = {
-            "x-rapidapi-key": RAPIDAPI_KEY,
-            "x-rapidapi-host": RAPIDAPI_HOST
-        }
-        
-        response = requests.get(url, headers=headers, params=querystring, timeout=10)
+        response = requests.get(MUSE_BASE_URL, params=params, timeout=10)
         
         if response.status_code != 200:
-            print(f"JSearch API Error: {response.status_code}")
+            print(f"The Muse API Error: {response.status_code}")
             return []
         
-        raw_jobs = response.json().get('data', [])
+        raw_jobs = response.json().get('results', [])
         
         # Normalize the data to consistent keys
         jobs = []
         for job in raw_jobs[:row]:  # Limit to 'row' number of jobs
             try:
+                # Clean up description if it contains HTML
+                description = job.get("contents", "N/A")
+                if description != "N/A":
+                    description = strip_html(description)[:500] + "..."
+                
                 normalized_job = {
-                    "title": job.get("job_title", "N/A"),
-                    "company": job.get("employer_name", "N/A"),
-                    "location": job.get("job_city", "") + ", " + job.get("job_country", ""),
-                    "description": job.get("job_description", "N/A")[:500] + "...",  # Truncate
-                    "url": job.get("job_apply_link", "#")
+                    "title": job.get("name", "N/A"),
+                    "company": job.get("company", {}).get("name", "N/A"),
+                    "location": job.get("locations", [{}])[0].get("name", "Remote") if job.get("locations") else "Remote",
+                    "description": description,
+                    "url": job.get("refs", {}).get("landing_page", "#")
                 }
                 jobs.append(normalized_job)
             except Exception as e:
@@ -150,5 +142,5 @@ def fetch_naukri_jobs(search_query, location="", row=10):
         return jobs
     
     except Exception as e:
-        print(f"Error fetching Naukri jobs: {e}")
+        print(f"Error fetching Naukri jobs from The Muse: {e}")
         return []
