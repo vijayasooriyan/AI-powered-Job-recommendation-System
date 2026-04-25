@@ -2,5 +2,4 @@ streamlit
 pymupdf
 python-dotenv
 requests
-apify-client
 groq
