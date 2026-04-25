@@ -13,8 +13,7 @@
 ![Render](https://img.shields.io/badge/Deployed-Render-blue?style=flat-square)
 ![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-[🌐 Live Demo](https://job-recommender-3k1m.onrender.com) • [💼 Portfolio](#portfolio) • [📚 Docs](#documentation)
-
+[🌐 Live Demo](https://ai-powered-job-recommendation-system.onrender.com) 
 </div>
 
 ---
