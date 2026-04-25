@@ -1,10 +1,12 @@
-from apify_client import ApifyClient
 import os
+import requests
 from dotenv import load_dotenv
 from html.parser import HTMLParser
 load_dotenv()
 
-apify_client = ApifyClient(os.getenv("APIFY_API_TOKEN"))
+# RapidAPI credentials for JSearch
+RAPIDAPI_KEY = os.getenv("RAPIDAPI_KEY")
+RAPIDAPI_HOST = os.getenv("RAPIDAPI_HOST", "jsearch.p.rapidapi.com")
 
 # Helper class to strip HTML tags
 class HTMLStripper(HTMLParser):
@@ -32,57 +34,111 @@ def strip_html(html_text):
     except:
         return html_text    
 
-#fetch linkedin and naukri jobs based on search query and location and return the results as a list of dictionaries with keys: title, company, location, description, url
-def fetch_linkedin_jobs(search_query,location="Sri Lanka", row=60):
-    run_input = {
-        "title": search_query,
-        "location": location,
-        "rows": row,
-        "proxy": {
-            "useApifyProxy": True,
-            "apifyProxyGroups": ["RESIDENTIAL"],
+#fetch jobs using JSearch API (free alternative to Apify)
+def fetch_linkedin_jobs(search_query, location="", row=10):
+    """
+    Fetch LinkedIn jobs using JSearch API from RapidAPI
+    Free tier: 100 requests/month
+    """
+    try:
+        url = "https://jsearch.p.rapidapi.com/search"
+        
+        # Search query with location
+        search_string = f"{search_query} jobs"
+        if location:
+            search_string += f" in {location}"
+        
+        querystring = {
+            "query": search_string,
+            "page": "1",
+            "num_pages": "1"
         }
-    }
-
-    run = apify_client.actor("BHzefUZlZRKWxkTck").call(run_input=run_input)
-    raw_jobs = list(apify_client.dataset(run["defaultDatasetId"]).iterate_items())
-    
-    # Normalize the data to consistent keys
-    jobs = []
-    for job in raw_jobs:
-        normalized_job = {
-            "title": job.get("positionTitle", "") or job.get("title", "N/A"),
-            "company": job.get("company", "N/A"),
-            "location": job.get("location", "N/A"),
-            "description": job.get("jobDescription", "") or job.get("description", "N/A"),
-            "url": job.get("link", "") or job.get("url", "#")
+        
+        headers = {
+            "x-rapidapi-key": RAPIDAPI_KEY,
+            "x-rapidapi-host": RAPIDAPI_HOST
         }
-        jobs.append(normalized_job)
+        
+        response = requests.get(url, headers=headers, params=querystring, timeout=10)
+        
+        if response.status_code != 200:
+            print(f"JSearch API Error: {response.status_code}")
+            return []
+        
+        raw_jobs = response.json().get('data', [])
+        
+        # Normalize the data to consistent keys
+        jobs = []
+        for job in raw_jobs[:row]:  # Limit to 'row' number of jobs
+            try:
+                normalized_job = {
+                    "title": job.get("job_title", "N/A"),
+                    "company": job.get("employer_name", "N/A"),
+                    "location": job.get("job_city", "") + ", " + job.get("job_country", ""),
+                    "description": job.get("job_description", "N/A")[:500] + "...",  # Truncate
+                    "url": job.get("job_apply_link", "#")
+                }
+                jobs.append(normalized_job)
+            except Exception as e:
+                print(f"Error processing job: {e}")
+                continue
+        
+        return jobs
     
-    return jobs
+    except Exception as e:
+        print(f"Error fetching LinkedIn jobs: {e}")
+        return []
 
-def fetch_naukri_jobs(search_query,location="Srilanka", row=60):
-    run_input = {
-        "keyword": search_query,
-        "maxJobs": row,
-        "freshness": "all", 
-        "sortby": "relevance",
-        "experience": "all",
-    }
 
-    run = apify_client.actor("alpcnRV9YI9lYVPWk").call(run_input=run_input)
-    raw_jobs = list(apify_client.dataset(run["defaultDatasetId"]).iterate_items())
-    
-    # Normalize the data to consistent keys
-    jobs = []
-    for job in raw_jobs:
-        normalized_job = {
-            "title": job.get("jobTitle", "") or job.get("title", "N/A"),
-            "company": job.get("companyName", "") or job.get("company", "N/A"),
-            "location": job.get("jobLocation", "") or job.get("location", "N/A"),
-            "description": strip_html(job.get("jobDescription", "") or job.get("description", "N/A")),
-            "url": job.get("jobUrl", "") or job.get("url", "#")
+def fetch_naukri_jobs(search_query, location="", row=10):
+    """
+    Fetch jobs using JSearch API (same as fetch_linkedin_jobs)
+    JSearch aggregates jobs from multiple sources including Naukri-like platforms
+    """
+    try:
+        url = "https://jsearch.p.rapidapi.com/search"
+        
+        search_string = f"{search_query} jobs"
+        if location:
+            search_string += f" in {location}"
+        
+        querystring = {
+            "query": search_string,
+            "page": "1",
+            "num_pages": "1"
         }
-        jobs.append(normalized_job)
+        
+        headers = {
+            "x-rapidapi-key": RAPIDAPI_KEY,
+            "x-rapidapi-host": RAPIDAPI_HOST
+        }
+        
+        response = requests.get(url, headers=headers, params=querystring, timeout=10)
+        
+        if response.status_code != 200:
+            print(f"JSearch API Error: {response.status_code}")
+            return []
+        
+        raw_jobs = response.json().get('data', [])
+        
+        # Normalize the data to consistent keys
+        jobs = []
+        for job in raw_jobs[:row]:  # Limit to 'row' number of jobs
+            try:
+                normalized_job = {
+                    "title": job.get("job_title", "N/A"),
+                    "company": job.get("employer_name", "N/A"),
+                    "location": job.get("job_city", "") + ", " + job.get("job_country", ""),
+                    "description": job.get("job_description", "N/A")[:500] + "...",  # Truncate
+                    "url": job.get("job_apply_link", "#")
+                }
+                jobs.append(normalized_job)
+            except Exception as e:
+                print(f"Error processing job: {e}")
+                continue
+        
+        return jobs
     
-    return jobs
+    except Exception as e:
+        print(f"Error fetching Naukri jobs: {e}")
+        return []
